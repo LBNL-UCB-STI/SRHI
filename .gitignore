@@ -57,6 +57,7 @@ data/processed/**
 *.dbf
 *.rds
 *.RData# data files
+*.pdf
 
 # documents
 docs/
