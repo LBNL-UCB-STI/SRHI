@@ -69,7 +69,7 @@ download_places_paginated <- function(endpoint, state, measure_id, mx_type,
         `$offset` = as.integer(offset)
       )
     )
-    
+
     if (http_error(response)) {
       stop(sprintf("API request failed: HTTP %d\n%s",
                    status_code(response),

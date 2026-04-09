@@ -276,7 +276,7 @@ run_specs <- tribble(
   "run22",  "Acute lower respiratory infection (children)",  "HCAi",       "county", "geoid",  "HCAi",           list(character(0)),             0L,          FALSE,         "Acute lower respiratory infection (children) | HCAi | county | age (0-17)",                        "Children only",
   "run23",  "Acute lower respiratory infection (children)",  "HCAi",       "county", "geoid",  "HCAi",           list("sex_grp"),                0L,          FALSE,         "Acute lower respiratory infection (children) | HCAi | county | age + sex",                         "Children only",
   #"run24",  "Acute lower respiratory infection (children)",  "HCAi",       "county", "geoid",  "HCAi",           list(c("sex_grp", "race_grp")), 0L,          FALSE,         "Acute lower respiratory infection (children) | HCAi | county | age + sex + race",                  "Children only"
-  
+
 ) |>
   mutate(strata = map(strata, ~ .x[[1]]))
 
@@ -314,7 +314,7 @@ run_hia <- function(merged_data, all_outcomes, run_row, rr_row, exposure_col) {
   strata <- strata[!is.na(strata)]   # remove any NA entries
   
   # --- E1. Filter outcome data ------------------------------------------------
- 
+
   outcome <- all_outcomes %>%
     filter(
       otcm_nm == !!otcm_nm,
@@ -328,15 +328,15 @@ run_hia <- function(merged_data, all_outcomes, run_row, rr_row, exposure_col) {
     outcome <- outcome %>%
       filter(age_grp == "All ages", sex_grp == "Both", race_grp == "Total")
   }
-  
+
   if (nrow(outcome) == 0) {
     message(sprintf("[%s] No outcome data found — skipping.", run_id))
     return(NULL)
   }
   
-  
+
   # --- E2. Assign age groups / filter valid exposures ------------------------
-  
+
   age_lkp <- age_lookups[[age_lkp_key]]
   
   if (unstratified) {
@@ -350,12 +350,12 @@ run_hia <- function(merged_data, all_outcomes, run_row, rr_row, exposure_col) {
     group_cols    <- geo_col
     active_strata <- character(0)
     strata_used   <- "none (All ages / Both / Total)"
-    
+
   } else {
     age_lkp <- age_lookups[[age_lkp_key]]
     pop <- merged_data |>
       left_join(age_lkp, by = "age") |>
-      filter(!is.na(age_grp), 
+      filter(!is.na(age_grp),
              !is.na(.data[[exposure_col]])) |>
       mutate(geoid = case_when(
         geolevl == "county" ~ str_sub(geoid, 1, 5),
@@ -365,8 +365,8 @@ run_hia <- function(merged_data, all_outcomes, run_row, rr_row, exposure_col) {
     group_cols    <- geo_col
     active_strata <- character(0)
     strata_used   <- "none (All ages / Both / Total)"
-    
-    
+
+
     # -- E3. Determine active strata ------------------------------
     active_strata <- if (length(strata) == 0) {
       character(0)
@@ -378,15 +378,15 @@ run_hia <- function(merged_data, all_outcomes, run_row, rr_row, exposure_col) {
     group_cols  <- c(geo_col, "age_grp", active_strata)
     strata_used <- if (length(active_strata) == 0) "age only"
     else paste(c("age", active_strata), collapse = " + ")
-    
+
     # ------ E4. Rename sex/race where needed ------------------------
     if ("sex_grp" %in% active_strata && !"sex_grp" %in% colnames(pop))
       pop <- pop |> rename(sex_grp = sex)
     if ("race_grp" %in% active_strata && !"race_grp" %in% colnames(pop))
       pop <- pop |> rename(race_grp = race)
   }
-  
-  
+
+
   if (nrow(pop) == 0) {
     message(sprintf("[%s] No persons matched — skipping.", run_id))
     return(NULL)
@@ -441,15 +441,15 @@ run_hia <- function(merged_data, all_outcomes, run_row, rr_row, exposure_col) {
       geolevl     = geolevl,   # ADD THIS
       analysis    = if_else(unstratified, "primary", "sensitivity")
     )
-  
+
   if (nrow(result) == 0) {
     message(sprintf("[%s | %s] No rows after mx filter — skipping.",
                     run_id, exposure_col))
     return(NULL)
   }
-  
+
   return(result)
-  
+
 
 }
 
@@ -515,10 +515,10 @@ hia_results <- pmap(run_specs, function(run_id, otcm_nm, source, geolevl,
     message(sprintf("[%s] No results returned — skipping.", run_id))
     return(NULL)
   }
-  
-  
+
+
   result
-  
+
 }) %>%
   compact() %>%
   list_flatten() %>%   # replaces flatten(); requires purrr >= 1.0.0

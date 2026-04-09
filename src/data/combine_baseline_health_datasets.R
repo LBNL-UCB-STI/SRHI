@@ -19,7 +19,7 @@ outcome_col_types <- cols(
   sex_grp  = col_character(),
   race_grp = col_character(),
   otcm_nm  = col_character(),
-  year = col_character(),   
+  year = col_character(),
   source   = col_character(),
   mx_name  = col_character(),
   mx       = col_double(),
@@ -39,7 +39,7 @@ lcan  <- read_csv("data/processed/lcan_mortality_county_2019_IHME.csv",         
 asth0 <- read_csv("data/processed/adult_currentasthma_ctract_county_2019_CDCPlaces.csv", col_types = outcome_col_types)
 asth1 <- read_csv("data/processed/adult_currentasthma_state_county_2021_2022_CHIS.csv",  col_types = outcome_col_types)
 asth2 <- read_csv("data/processed/child_currentasthma_state_county_2021_2022_CHIS.csv",  col_types = outcome_col_types)
-alri  <- read_csv("data/processed/alri_county_2019_HCAI.csv",                      col_types = outcome_col_types) 
+alri  <- read_csv("data/processed/alri_county_2019_HCAI.csv",                      col_types = outcome_col_types)
 
 # =============================================================================
 # C. Combine and clean
@@ -62,8 +62,8 @@ all_outcomes <- bind_rows(ac1, ac2, ihd, lcan, asth0, asth1, asth2, alri) |>
     mx_upper = if_else(is.na(mx_upper), mx, mx_upper)
   ) |>
   # exclude "All ages" aggregate rows
-  filter(!age_grp %in% c("Age-standardized")) 
-  
+  filter(!age_grp %in% c("Age-standardized"))
+
 
 # =============================================================================
 # D. QA checks
