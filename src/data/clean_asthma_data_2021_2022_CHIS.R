@@ -46,12 +46,12 @@ fetch_all_ckan <- function(resource_id, query, limit = 500) {
     
     parsed  <- GET(url) |> content(as = "parsed", type = "application/json")
     records <- parsed$result$records
-    
+
     if (length(records) == 0) break
     all_records[[length(all_records) + 1]] <- records
     offset <- offset + limit
   }
-  
+
   bind_rows(all_records)
 }
 
@@ -68,9 +68,9 @@ message(sprintf("Downloaded %d rows.", nrow(chis)))
 # =============================================================================
 
 clean_chis_asthma <- function(data, age_recode, keep_qflags, otcm_suffix = "") {
-  
+
   sfba_plus_state <- c(sfba_names, "California")
-  
+
   data |>
     filter(COUNTY %in% sfba_plus_state) |>
     mutate(

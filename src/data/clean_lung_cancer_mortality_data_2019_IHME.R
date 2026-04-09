@@ -13,7 +13,7 @@ library(leaflet)
 library(stringr)
 
 # load county and census tract shapefiles
-counties <- st_read("data/raw/cb_2024_06_tract_500k.shp")
+counties <- st_read("data/raw/census_boundaries/cartographic_shapefiles/2024/cb_2024_06_tract_500k.shp")
 counties <- st_as_sf(counties, crs = 4326)
 counties <- counties[, 2]
 colnames(counties) <- c("fips", "geometry")

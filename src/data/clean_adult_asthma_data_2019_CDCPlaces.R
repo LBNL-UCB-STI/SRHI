@@ -5,6 +5,7 @@
 # Target: Current asthma prevalence + 95% CI (crude prevalence)
 # =============================================================================
 
+library(sf)
 library(httr)
 library(jsonlite)
 library(tidyverse)
