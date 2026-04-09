@@ -17,7 +17,7 @@ import json
 import textwrap
 
 from pathlib import Path
-from collections import Counter
+from collections import Counter, deque, defaultdict
 
 # ----------------------------------------------------------------------
 # Regular expressions (same as before)
@@ -132,16 +132,13 @@ def scan_r_file(file_path):
 
 def find_data_files_as_map(root_dir: str) -> dict[str, str]:
     root = Path(root_dir).resolve()
-    extensions = {".csv", ".shp"}
+    extensions = {".csv", ".shp", ".rdata"}
     file_map = {}
     for p in root.rglob("*"):
         if p.suffix.lower() in extensions:
             file_map[p.name] = str(p)
     return file_map
 
-
-from collections import deque, defaultdict
-import os
 
 def resolve_script_order_simple(file_to_params, raw_file_to_path):
     """
@@ -251,10 +248,9 @@ def resolve_script_order_simple(file_to_params, raw_file_to_path):
 
 def main():
     root_path = Path('.').resolve()
-    raw_path = Path('/data/work/beam/SRHI_data/data/raw').resolve()
+    raw_path = Path('.').resolve()
 
     raw_file_to_path = find_data_files_as_map(raw_path)
-    raw_file_to_path['sfba.RData'] = 'data/raw/sfba.RData'
 
     file_to_params = {}
     all_libraries = []  # collect every library occurrence (with duplicates) for summary
@@ -285,7 +281,8 @@ def main():
 
         # Print JSON to stdout
         print(json.dumps(output_data, indent=2, ensure_ascii=False))
-    else:
+
+    elif len(sys.argv) > 1 and 'order' in sys.argv[1]:
         print("\n" + "="*60)
         print("Which R scripts can be run, which are not, what files are missing")
         print("="*60)
@@ -304,6 +301,7 @@ def main():
             for f, scripts in result['missing_files'].items():
                 print(f"  {f} needed by: {', '.join(scripts)}")
 
+    elif len(sys.argv) > 1 and 'libs' in sys.argv[1]:
         if all_libraries:
             # Generate the content of requirements.R
             lib_list = set(all_libraries)
@@ -336,7 +334,8 @@ def main():
             print("\n" + "="*60)
             print(f"Scanned {len(file_to_params)} R files.")
             print("="*60)
-
+    else:
+        print("Usage: python io_analysis.py json|order|libs")
 
 if __name__ == '__main__':
     main()
