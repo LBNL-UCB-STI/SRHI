@@ -44,9 +44,14 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# data files
-data/raw/
-data/processed/
+# keep data folder and sfba.RData file
+!data/raw
+!data/raw/sfba.RData
+!data/processed
+
+# ignore the rest of data files
+data/raw/**
+data/processed/**
 *.csv
 *.shp
 *.dbf
