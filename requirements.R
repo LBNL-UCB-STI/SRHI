@@ -1,11 +1,9 @@
 #!/usr/bin/env Rscript
+# requirements.R
+# This script installs all R packages used in the scanned project.
+# Run it with: Rscript requirements.R 2>&1 | tee install.log
+
 options(repos = c(CRAN = "https://cloud.r-project.org"))
-install.packages(c(
-  "RColorBrewer", "dplyr", "ggplot2", "httr", "jsonlite", "leaflet",
-  "purrr", "readr", "sf", "stringr", "tibble", "tidyr", "tidyverse",
-  "tigris", "vroom"
-))
 
+install.packages(c("stringr", "dplyr", "vroom", "httr", "tidyverse", "leaflet", "RColorBrewer", "tigris", "sf", "tibble", "jsonlite", "tidyr", "purrr", "readr", "ggplot2"))
 
-# missing files:
-# data/raw/simulated_population/sfbay-tr_capacity_1_5-20230608_activitysim_data_persons.csv

@@ -306,7 +306,7 @@ def main():
 
         if all_libraries:
             # Generate the content of requirements.R
-            lib_list = sorted(all_libraries)
+            lib_list = set(all_libraries)
             libs_quoted = '", "'.join(lib_list)
             req_script = textwrap.dedent(f'''\
                 #!/usr/bin/env Rscript
