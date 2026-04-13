@@ -33,19 +33,19 @@ clean_cdc_wonder <- function(path,
                              fixed_race   = NULL,
                              fixed_age    = NULL,   # add this
                              keep_qflags  = 0L) {
-  
+
   raw <- read_csv(path, show_col_types = FALSE)
-  
+
   # limit rows — either by index or by filtering metadata (NA in County/State col)
   if (!is.null(keep_rows)) {
     raw <- raw[keep_rows, ]
   } else {
     raw <- raw |> filter(!is.na(raw[[1]]))
   }
-  
+
   # select and rename columns
   raw <- raw |> select(all_of(keep_cols))
-  
+
   # recode Hispanic origin into race column
   if (has_hispanic) {
     raw <- raw |>
@@ -53,12 +53,12 @@ clean_cdc_wonder <- function(path,
                                 "Hispanic", race_grp)) |>
       select(-`Hispanic Origin`)
   }
-  
+
   # add fixed columns where not stratified
   if (!is.null(fixed_age))  raw <- raw |> mutate(age_grp  = fixed_age)
   if (!is.null(fixed_sex))  raw <- raw |> mutate(sex_grp  = fixed_sex)
   if (!is.null(fixed_race)) raw <- raw |> mutate(race_grp = fixed_race)
-  
+
   raw |>
     filter(!Population %in% c("Not Applicable", "Suppressed")) |>
     # coerce all potentially mixed-type columns to character
@@ -90,7 +90,7 @@ clean_cdc_wonder <- function(path,
         `Crude Rate` == "Unreliable"                           ~ 2L,
         TRUE                                                   ~ 0L
       ),
-      
+
       # impute rates for suppressed/unreliable (for sensitivity analysis)
       `Crude Rate` = case_when(
         `Crude Rate` %in% c("Unreliable", "Suppressed") ~ as.character(Deaths / Population * 100000),
@@ -204,9 +204,9 @@ ihda <- clean_cdc_wonder(
   path         = "data/raw/baseline_health_outcomes/ihd_mortality_county_2019_CDC.csv",
   geolevl      = "county",
   keep_rows    = 1:2592,
-  keep_cols  = c(geoid = "County Code", lctn_nm = "County", 
+  keep_cols  = c(geoid = "County Code", lctn_nm = "County",
                  age_grp = "Ten-Year Age Groups", sex_grp = "Sex",
-                 race_grp = "Race", "Hispanic Origin", 
+                 race_grp = "Race", "Hispanic Origin",
                  Deaths = "Deaths", Population = "Population",
                  "Crude Rate",
                  "Crude Rate Lower 95% Confidence Interval",

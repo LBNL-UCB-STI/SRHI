@@ -12,7 +12,7 @@ library(dplyr)
 library(sf)
 
 # make file paths for input and output files
-file_path  <- "data/raw/ca.1990_2023.singleages.through89.90plus.txt"
+file_path  <- "data/raw/population_data/ca.1990_2024.singleages.through89.90plus.txt"
 output_csv <- "data/raw/pops_county_2019.csv"
 
 # define chunk size and number to read in data
